@@ -46,6 +46,12 @@ POLICY = {
 app.mount("/dashboard", StaticFiles(directory="static", html=True), name="dashboard")
 
 
+@app.on_event("startup")
+def on_startup():
+    from models import Base, engine
+    Base.metadata.create_all(bind=engine)
+
+
 @app.get("/")
 def read_root():
     return {
