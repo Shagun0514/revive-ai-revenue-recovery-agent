@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revive — Revenue Recovery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F6F0E4;
+    --cream-card: #FCF9F2;
+    --border: rgba(43, 36, 28, 0.10);
+    --border-strong: rgba(43, 36, 28, 0.18);
+    --text: #2B2118;
+    --text-dim: #7A6E5D;
+    --text-faint: #ACA08B;
+    --bordeaux: #7A2333;
+    --bordeaux-dim: rgba(122, 35, 51, 0.09);
+    --bordeaux-line: rgba(122, 35, 51, 0.25);
+    --green: #1F3D2E;
+    --green-dim: rgba(31, 61, 46, 0.09);
+    --green-line: rgba(31, 61, 46, 0.28);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    color: var(--text);
+    font-family: 'Poppins', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 40px 28px 100px; }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+  }
+
+  .brand { display: flex; align-items: center; gap: 11px; }
+  .brand-mark {
+    width: 32px; height: 32px; border-radius: 9px; background: var(--bordeaux);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 700; color: var(--cream-card);
+  }
+  .brand-name { font-size: 21px; font-weight: 600; letter-spacing: -0.01em; }
+  .tagline { font-size: 13px; color: var(--text-dim); margin-top: 3px; margin-left: 43px; }
+
+  .status-pill {
+    display: flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 500;
+    color: var(--green); background: var(--green-dim); border: 1px solid var(--green-line);
+    padding: 6px 13px 6px 11px; border-radius: 20px;
+  }
+  .pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); position: relative; }
+  .pulse-dot::after {
+    content: ''; position: absolute; inset: -4px; border-radius: 50%;
+    background: var(--green); animation: pulse 2s ease-out infinite;
+  }
+  @keyframes pulse {
+    0% { opacity: 0.55; transform: scale(0.6); }
+    70% { opacity: 0; transform: scale(2.2); }
+    100% { opacity: 0; transform: scale(2.2); }
+  }
+
+  /* --- Hero banner --- */
+  .hero {
+    background: var(--cream-card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 36px 40px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .hero-label { font-size: 13px; color: var(--text-dim); font-weight: 500; margin-bottom: 10px; }
+  .hero-value {
+    font-size: 56px; font-weight: 700; letter-spacing: -0.03em; line-height: 1;
+    color: var(--green);
+  }
+  .hero-sub { font-size: 13.5px; color: var(--text-faint); margin-top: 12px; }
+
+  .hero-stats { display: flex; flex-direction: column; gap: 18px; }
+  .hero-stat-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 14px; border-bottom: 1px solid var(--border);
+  }
+  .hero-stat-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .hero-stat-label { font-size: 13px; color: var(--text-dim); }
+  .hero-stat-value { font-size: 22px; font-weight: 600; }
+  .hero-stat-value.warn { color: var(--bordeaux); }
+
+  .hero-spark { grid-column: 1 / -1; height: 50px; margin-top: -4px; }
+
+  /* --- Two column layout --- */
+  .grid {
+    display: grid;
+    grid-template-columns: 1.7fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .panel {
+    background: var(--cream-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .panel-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 24px; border-bottom: 1px solid var(--border);
+  }
+  .panel-title { font-size: 14.5px; font-weight: 600; }
+  .panel-count { font-size: 12.5px; color: var(--text-faint); }
+
+  /* --- Activity list (left) --- */
+  .activity-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 24px; border-bottom: 1px solid var(--border);
+  }
+  .activity-item:last-child { border-bottom: none; }
+
+  .avatar {
+    width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+  }
+  .avatar.recovered { background: var(--green-dim); color: var(--green); }
+  .avatar.pending { background: var(--bordeaux-dim); color: var(--bordeaux); }
+  .avatar.failed { background: rgba(156,74,63,0.10); color: #9C4A3F; }
+
+  .activity-main { flex: 1; min-width: 0; }
+  .activity-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .activity-id {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text-dim);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .activity-amount {
+    font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 500; flex-shrink: 0;
+  }
+  .activity-meta { display: flex; align-items: center; gap: 10px; margin-top: 5px; }
+  .activity-time { font-size: 11.5px; color: var(--text-faint); font-family: 'IBM Plex Mono', monospace; }
+  .activity-status { font-size: 11.5px; font-weight: 500; }
+  .activity-status.recovered { color: var(--green); }
+  .activity-status.pending { color: var(--bordeaux); }
+  .activity-status.failed { color: #9C4A3F; }
+  .activity-explanation {
+    font-size: 12px; color: var(--text-dim); margin-top: 7px; line-height: 1.5;
+    font-style: italic;
+  }
+  .activity-link { font-size: 11.5px; color: var(--bordeaux); font-weight: 500; text-decoration: none; margin-left: auto; }
+  .activity-link:hover { text-decoration: underline; }
+
+  /* --- Sidebar (right) --- */
+  .sidebar-stack { display: flex; flex-direction: column; gap: 16px; }
+
+  .approval-card { padding: 16px 20px; border-bottom: 1px solid var(--border); }
+  .approval-card:last-child { border-bottom: none; }
+  .approval-amount { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 16px; color: var(--bordeaux); }
+  .approval-explanation { font-size: 12px; color: var(--text-dim); margin-top: 6px; line-height: 1.5; }
+  .approval-actions { display: flex; gap: 8px; margin-top: 12px; }
+
+  .btn {
+    font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500;
+    padding: 7px 14px; border-radius: 7px; border: 1px solid transparent; cursor: pointer;
+    transition: opacity 0.15s ease; flex: 1;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn:active { transform: scale(0.98); }
+  .btn-approve { background: var(--green); color: var(--cream-card); }
+  .btn-reject { background: transparent; border-color: var(--border-strong); color: var(--text-dim); }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+
+  /* --- Reasoning feed --- */
+  .feed-item { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; gap: 10px; }
+  .feed-item:last-child { border-bottom: none; }
+  .feed-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .feed-dot.link { background: var(--bordeaux); }
+  .feed-dot.none { background: var(--text-faint); }
+  .feed-text { font-size: 12px; color: var(--text-dim); line-height: 1.55; }
+  .feed-text strong { color: var(--text); font-weight: 600; }
+  .feed-time { font-size: 10.5px; color: var(--text-faint); margin-top: 3px; font-family: 'IBM Plex Mono', monospace; }
+
+  .empty-state { padding: 56px 24px; text-align: center; color: var(--text-faint); font-size: 13.5px; }
+  .empty-state strong { display: block; font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+
+  footer { margin-top: 24px; font-size: 12px; color: var(--text-faint); text-align: center; }
+
+  .row-enter { animation: fadeIn 0.5s ease; }
+  @keyframes fadeIn { from { background: var(--bordeaux-dim); } to { background: transparent; } }
+
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <div class="brand">
+          <div class="brand-mark">R</div>
+          <div class="brand-name">Revive</div>
+        </div>
+        <div class="tagline">AI Revenue Recovery Agent · Test Mode</div>
+      </div>
+      <div class="status-pill"><span class="pulse-dot"></span>Live</div>
+    </header>
+
+    <div class="hero">
+      <div>
+        <div class="hero-label">Revenue recovered</div>
+        <div class="hero-value" id="m-recovered">₹0</div>
+        <div class="hero-sub" id="m-recovered-sub">No recoveries yet</div>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat-row">
+          <span class="hero-stat-label">Revenue at risk</span>
+          <span class="hero-stat-value warn" id="m-risk">₹0</span>
+        </div>
+        <div class="hero-stat-row">
+          <span class="hero-stat-label">Recovery rate</span>
+          <span class="hero-stat-value" id="m-rate">0%</span>
+        </div>
+      </div>
+      <div class="hero-spark"><svg id="sparkline" width="100%" height="50" preserveAspectRatio="none"></svg></div>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">Recovery activity</div>
+          <div class="panel-count" id="ledger-count">0 entries</div>
+        </div>
+        <div id="ledger-body">
+          <div class="empty-state">
+            <strong>Waiting for activity</strong>
+            Trigger a failed payment to see the agent detect, decide, and act — live.
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-stack">
+        <div class="panel" id="approvals-section" style="display:none;">
+          <div class="panel-head">
+            <div class="panel-title">Needs your approval</div>
+            <div class="panel-count" id="approvals-count">0</div>
+          </div>
+          <div id="approvals-body"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Agent reasoning</div>
+          </div>
+          <div id="feed-body">
+            <div class="empty-state" style="padding: 40px 20px;">
+              <strong>No decisions yet</strong>
+              Explanations appear here as the agent evaluates failures.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>Auto-refreshing every 6s</footer>
+  </div>
+
+<script>
+  let lastIds = new Set();
+  let lastValues = { risk: 0, recovered: 0, rate: 0 };
+
+  function fmtCurrency(n) {
+    if (n === null || n === undefined) return '—';
+    return '₹' + Math.round(Number(n)).toLocaleString('en-IN');
+  }
+  function fmtTime(iso) {
+    if (!iso) return '—';
+    return new Date(iso).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function animateValue(el, from, to, suffix) {
+    suffix = suffix || '';
+    const duration = 600;
+    const start = performance.now();
+    function tick(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = from + (to - from) * eased;
+      el.textContent = (suffix === '%') ? Math.round(current) + '%' : '₹' + Math.round(current).toLocaleString('en-IN');
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function drawSparkline(values) {
+    const svg = document.getElementById('sparkline');
+    const w = svg.clientWidth || 300;
+    const h = 50;
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    if (!values.length) { svg.innerHTML = ''; return; }
+    if (values.length === 1) values = [0, values[0]];
+    const max = Math.max(...values, 1);
+    const min = Math.min(...values, 0);
+    const range = max - min || 1;
+    const step = w / (values.length - 1);
+    const points = values.map((v, i) => [i * step, h - ((v - min) / range) * (h - 6) - 3]);
+    const path = points.map((p, i) => (i === 0 ? 'M' : 'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+    const areaPath = path + ` L${w},${h} L0,${h} Z`;
+    svg.innerHTML = `
+      <defs><linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#1F3D2E" stop-opacity="0.28"/>
+        <stop offset="100%" stop-color="#1F3D2E" stop-opacity="0"/>
+      </linearGradient></defs>
+      <path d="${areaPath}" fill="url(#sparkFill)" />
+      <path d="${path}" fill="none" stroke="#1F3D2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
+  }
+
+  function statusInfo(txn) {
+    if (txn.recovered) return { key: 'recovered', label: 'Recovered' };
+    if (txn.approval_status === 'pending_approval') return { key: 'pending', label: 'Awaiting approval' };
+    if (txn.approval_status === 'rejected') return { key: 'failed', label: 'Rejected' };
+    if (txn.recommended_action === 'payment_link') return { key: 'pending', label: 'Link sent' };
+    if (txn.event_type === 'payment_link.created' || txn.status === 'link_created') return { key: 'pending', label: 'Link created' };
+    if (txn.event_type === 'payment.failed' || txn.status === 'failed') return { key: 'failed', label: 'Failed' };
+    return { key: 'pending', label: txn.status || 'Pending' };
+  }
+
+  async function handleApprove(id, btn) {
+    btn.disabled = true; btn.textContent = 'Approving…';
+    try {
+      const res = await fetch(`/approve/${id}`, { method: 'POST' });
+      if (!res.ok) throw new Error();
+      loadDashboard();
+    } catch (e) { btn.disabled = false; btn.textContent = 'Approve'; alert('Could not approve — check server logs.'); }
+  }
+  async function handleReject(id, btn) {
+    btn.disabled = true; btn.textContent = 'Rejecting…';
+    try {
+      const res = await fetch(`/reject/${id}`, { method: 'POST' });
+      if (!res.ok) throw new Error();
+      loadDashboard();
+    } catch (e) { btn.disabled = false; btn.textContent = 'Reject'; }
+  }
+
+  function renderApprovals(pending) {
+    const section = document.getElementById('approvals-section');
+    const body = document.getElementById('approvals-body');
+    document.getElementById('approvals-count').textContent = pending.length;
+    if (!pending.length) { section.style.display = 'none'; return; }
+    section.style.display = 'block';
+    body.innerHTML = '';
+    pending.forEach(txn => {
+      const card = document.createElement('div');
+      card.className = 'approval-card';
+      card.innerHTML = `
+        <div class="approval-amount">${fmtCurrency(txn.amount)}</div>
+        <div class="approval-explanation">${txn.llm_explanation || 'Above auto-execute threshold — needs review.'}</div>
+        <div class="approval-actions">
+          <button class="btn btn-reject">Reject</button>
+          <button class="btn btn-approve">Approve</button>
+        </div>`;
+      card.querySelector('.btn-approve').addEventListener('click', (e) => handleApprove(txn.id, e.target));
+      card.querySelector('.btn-reject').addEventListener('click', (e) => handleReject(txn.id, e.target));
+      body.appendChild(card);
+    });
+  }
+
+  function renderFeed(transactions) {
+    const withExplanation = transactions.filter(t => t.llm_explanation).slice(0, 6);
+    const body = document.getElementById('feed-body');
+    if (!withExplanation.length) {
+      body.innerHTML = `<div class="empty-state" style="padding: 40px 20px;"><strong>No decisions yet</strong>Explanations appear here as the agent evaluates failures.</div>`;
+      return;
+    }
+    body.innerHTML = withExplanation.map(txn => `
+      <div class="feed-item">
+        <span class="feed-dot ${txn.recommended_action === 'payment_link' ? 'link' : 'none'}"></span>
+        <div>
+          <div class="feed-text"><strong>${fmtCurrency(txn.amount)}</strong> — ${txn.llm_explanation}</div>
+          <div class="feed-time">${fmtTime(txn.created_at)}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  function renderActivity(transactions) {
+    const body = document.getElementById('ledger-body');
+    if (!transactions.length) {
+      body.innerHTML = `<div class="empty-state"><strong>Waiting for activity</strong>Trigger a failed payment to see the agent detect, decide, and act — live.</div>`;
+      return;
+    }
+    const newIds = new Set(transactions.map(t => t.id));
+    body.innerHTML = transactions.map(txn => {
+      const s = statusInfo(txn);
+      const isNew = !lastIds.has(txn.id) && lastIds.size > 0;
+      const initial = txn.recommended_action === 'payment_link' ? 'PL' : (txn.status || '?').slice(0,2).toUpperCase();
+      const linkHtml = txn.payment_link_url ? `<a class="activity-link" href="${txn.payment_link_url}" target="_blank">View →</a>` : '';
+      return `
+        <div class="activity-item ${isNew ? 'row-enter' : ''}">
+          <div class="avatar ${s.key}">${initial}</div>
+          <div class="activity-main">
+            <div class="activity-top">
+              <span class="activity-id">${txn.id}</span>
+              <span class="activity-amount">${fmtCurrency(txn.amount)}</span>
+            </div>
+            <div class="activity-meta">
+              <span class="activity-time">${fmtTime(txn.created_at)}</span>
+              <span class="activity-status ${s.key}">${s.label}</span>
+              ${txn.expected_profit != null ? `<span class="activity-time">exp. profit ${fmtCurrency(txn.expected_profit)}</span>` : ''}
+              ${linkHtml}
+            </div>
+            ${txn.llm_explanation ? `<div class="activity-explanation">${txn.llm_explanation}</div>` : ''}
+          </div>
+        </div>`;
+    }).join('');
+    lastIds = newIds;
+  }
+
+  async function loadDashboard() {
+    try {
+      const res = await fetch('/dashboard-data');
+      const data = await res.json();
+
+      animateValue(document.getElementById('m-recovered'), lastValues.recovered, data.revenue_recovered);
+      animateValue(document.getElementById('m-risk'), lastValues.risk, data.revenue_at_risk);
+      animateValue(document.getElementById('m-rate'), lastValues.rate, data.recovery_rate, '%');
+      lastValues = { risk: data.revenue_at_risk, recovered: data.revenue_recovered, rate: data.recovery_rate };
+
+      document.getElementById('m-recovered-sub').textContent =
+        data.total_recovered ? data.total_recovered + ' payment' + (data.total_recovered === 1 ? '' : 's') + ' recovered' : 'No recoveries yet';
+      document.getElementById('ledger-count').textContent = data.recent_transactions.length + ' entries';
+
+      const cumulative = [];
+      let running = 0;
+      [...data.recent_transactions].reverse().forEach(t => { if (t.recovered) running += (t.amount || 0); cumulative.push(running); });
+      drawSparkline(cumulative);
+
+      renderApprovals(data.pending_approvals || []);
+      renderFeed(data.recent_transactions);
+      renderActivity(data.recent_transactions);
+    } catch (e) { console.error('Dashboard load failed', e); }
+  }
+
+  loadDashboard();
+  setInterval(loadDashboard, 6000);
+</script>
+</body>
+</html>
