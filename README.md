@@ -2,6 +2,9 @@
 
 **Track 03: AI Revenue Recovery**
 
+**🔴 Live Demo:** [revive-ai-revenue-recovery-agent-qu9w.onrender.com/dashboard](https://revive-ai-revenue-recovery-agent-qu9w.onrender.com/dashboard)
+*(Fully deployed — wired to real Razorpay Test Mode webhooks, not a local-only demo. Note: the free-tier instance may take ~30-60s to wake up if it's been idle.)*
+
 > Revive treats every failed payment as a financial decision, not just a database entry. It predicts whether recovery is worth pursuing, decides the most profitable action, checks it's allowed to act, executes through real Razorpay infrastructure, and proves the money actually came back.
 
 ---
